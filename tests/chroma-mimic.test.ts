@@ -1,4 +1,4 @@
-import { convertRGBtoHSL, setupBins } from './chromo-mimic';
+import { convertRGBtoHSL, setupBins } from '../src/chroma-mimic';
 
 describe('rgbToHSL function', () => {
   test.each([
@@ -22,11 +22,14 @@ describe('rgbToHSL function', () => {
 });
 
 describe('setupBins function', () => {
-  test('should return array of same length as binCount parameter', () => {
-    const result = setupBins(360, 10);
+  test.each([1, 5, 10, 15, 100])(
+    'should return array of same length as binCount parameter (%s)',
+    (binCountValue) => {
+      const result = setupBins(360, binCountValue);
 
-    expect(result).toHaveLength(10);
-  });
+      expect(result).toHaveLength(binCountValue);
+    }
+  );
 
   test('should return array where first object is expected shape', () => {
     const result = setupBins(360, 10);

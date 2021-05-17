@@ -6,7 +6,7 @@
     "module": "commonjs",
     "lib": ["DOM", "ES2015"],
     "declaration": true,
-    "sourceMap": true,
+    // "sourceMap": true,
     "strict": true,
     "esModuleInterop": true,
     "noImplicitAny": true,

@@ -1,5 +1,5 @@
 {
-  "name": "chromo-mimic",
+  "name": "chroma-mimic",
   "version": "0.0.1",
   "description": "extract average color from images",
   "keywords": [
@@ -8,14 +8,17 @@
     "extract",
     "hsl"
   ],
-  "main": "dist/chromo-mimic.cjs.js",
+  "main": "dist/chroma-mimic.cjs.js",
   "scripts": {
     "build": "tsc",
     "test": "jest",
     "watch:tsc": "tsc --watch",
     "watch:test": "jest --watch"
   },
-  "author": "",
+  "author": {
+    "email": "m.dahlin1@gmail.com",
+    "name": "Mats Dahlin"
+  },
   "license": "MIT",
   "files": [
     "dist"

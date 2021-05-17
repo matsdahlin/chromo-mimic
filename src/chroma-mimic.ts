@@ -11,6 +11,13 @@ type Bin = {
   values: HSLColor;
 };
 
+export type Config = {
+  devTools: boolean;
+  filters: {
+    saturation: number;
+  };
+};
+
 function binComparer(a: Bin, b: Bin): -1 | 1 | 0 {
   if (a.count > b.count) {
     return -1;
@@ -20,10 +27,6 @@ function binComparer(a: Bin, b: Bin): -1 | 1 | 0 {
   }
   return 0;
 }
-
-export type Config = {
-  devTools: boolean;
-};
 
 async function getImagePixels(imageUrl: string): Promise<ImageData | null> {
   const canvas = document.createElement('canvas');
@@ -77,8 +80,10 @@ function fillBins(bins: Bin[], pixels: ImageData) {
 
     for (let j = 0; j < binsCopy.length; j++) {
       let currentBin = binsCopy[j];
+
       const matchesCurrentBin =
         pixelAsHSL.h > currentBin.min && pixelAsHSL.h < currentBin.max;
+
       if (
         matchesCurrentBin &&
         pixelAsHSL.s > 30 &&
@@ -97,7 +102,7 @@ function fillBins(bins: Bin[], pixels: ImageData) {
   return binsCopy;
 }
 
-export async function getGradientFromImage(
+export async function getColorFromImage(
   imageUrl: string,
   config: Config
 ): Promise<HSLColor> {
@@ -105,7 +110,10 @@ export async function getGradientFromImage(
     console.log('devtolls');
     const devTools = document.createElement('div');
     devTools.innerHTML = 'DEV TOOLS';
-    document.querySelector('body')?.appendChild(devTools);
+    const bodyElement = document.querySelector('body');
+    if (bodyElement) {
+      bodyElement.appendChild(devTools);
+    }
   }
   const pixels = await getImagePixels(imageUrl);
   if (pixels === null) {
