@@ -11,6 +11,10 @@ type Bin = {
   values: HSLColor;
 };
 
+export type Config = {
+  devTools: boolean;
+};
+
 function binComparer(a: Bin, b: Bin): -1 | 1 | 0 {
   if (a.count > b.count) {
     return -1;
@@ -20,10 +24,6 @@ function binComparer(a: Bin, b: Bin): -1 | 1 | 0 {
   }
   return 0;
 }
-
-export type Config = {
-  devTools: boolean;
-};
 
 async function getImagePixels(imageUrl: string): Promise<ImageData | null> {
   const canvas = document.createElement('canvas');
@@ -105,7 +105,10 @@ export async function getGradientFromImage(
     console.log('devtolls');
     const devTools = document.createElement('div');
     devTools.innerHTML = 'DEV TOOLS';
-    document.querySelector('body')?.appendChild(devTools);
+    const bodyElement = document.querySelector('body');
+    if (bodyElement) {
+      bodyElement.appendChild(devTools);
+    }
   }
   const pixels = await getImagePixels(imageUrl);
   if (pixels === null) {
