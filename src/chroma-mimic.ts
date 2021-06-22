@@ -86,14 +86,13 @@ function fillBins(bins: Bin[], pixels: ImageData, filters: Filters) {
       let currentBin = binsCopy[j];
 
       const matchesCurrentBin = pixelAsHSL.h > currentBin.min && pixelAsHSL.h < currentBin.max;
-
-      if (
-        matchesCurrentBin &&
+      const isFiltered =
         pixelAsHSL.s > filters.saturationMin &&
         pixelAsHSL.s < filters.saturationMax &&
         pixelAsHSL.l > filters.luminosityMin &&
-        pixelAsHSL.l < filters.luminosityMax
-      ) {
+        pixelAsHSL.l < filters.luminosityMax;
+
+      if (matchesCurrentBin && isFiltered) {
         currentBin.count++;
         currentBin.values.h += pixelAsHSL.h;
         currentBin.values.s += pixelAsHSL.s;
@@ -112,8 +111,8 @@ export async function getColorFromImage(
     filters: {
       saturationMin: 20,
       saturationMax: 95,
-      luminosityMin: 30,
-      luminosityMax: 70,
+      luminosityMin: 35,
+      luminosityMax: 65,
     },
   }
 ): Promise<HSLColor> {
