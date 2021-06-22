@@ -29,10 +29,12 @@
         transitioning: false,
         images: [
           './images/omnivium.jpg',
+          './images/iconic-single.jpg',
+          './images/white-album.jpeg',
           './images/diluvium.jpg',
           './images/wings-of-fire.jpg',
           './images/reinkaos.jpg',
-          './images/white-album.jpeg',
+          './images/firewind.jpeg',
         ],
         currentImageIndex: 0,
         swapBackgrounds() {
@@ -42,7 +44,8 @@
           this.transitioning = false;
         },
         async toggleImage() {
-          this.currentImageIndex = this.currentImageIndex + 1 <= 4 ? this.currentImageIndex + 1 : 0;
+          this.currentImageIndex =
+            this.currentImageIndex + 1 <= this.images.length - 1 ? this.currentImageIndex + 1 : 0;
           this.transitioning = true;
           this.getGradient(this.currentImageIndex);
         },
@@ -52,15 +55,13 @@
           this.setVarGradient('--album-gradient', highestColor);
         },
         async getGradient(index) {
-          const highestColor = await getColorFromImage(this.images[index], {
-            devTools: true,
-          });
+          const highestColor = await getColorFromImage(this.images[index]);
 
           this.setVarGradient('--album-gradient-back', highestColor);
         },
         setVarGradient(gradientProperty, baseColor) {
           const gradient = `linear-gradient(hsl(${baseColor.h},${baseColor.s}%,${
-            baseColor.l * 1.75
+            baseColor.l
           }%), hsl(${baseColor.h},${baseColor.s}%,${baseColor.l * 0.5}%))`;
 
           const root = document.documentElement;

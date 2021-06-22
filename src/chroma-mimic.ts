@@ -4,6 +4,13 @@ export type HSLColor = {
   l: number;
 };
 
+export type Filters = {
+  saturationMin: number;
+  saturationMax: number;
+  luminosityMin: number;
+  luminosityMax: number;
+};
+
 type Bin = {
   min: number;
   max: number;
@@ -12,9 +19,7 @@ type Bin = {
 };
 
 export type Config = {
-  filters: {
-    saturation: number;
-  };
+  filters: Filters;
 };
 
 function binComparer(a: Bin, b: Bin): -1 | 1 | 0 {
@@ -50,7 +55,7 @@ async function getImagePixels(imageUrl: string): Promise<ImageData | null> {
   return pixels;
 }
 
-export function setupBins(maxValue = 360, binCount = 10): Bin[] {
+export function setupBins(maxValue = 360, binCount = 6): Bin[] {
   const bins: Bin[] = [];
   const step = maxValue / binCount;
   for (let i = 0; i < maxValue; i += step) {
@@ -66,7 +71,7 @@ export function setupBins(maxValue = 360, binCount = 10): Bin[] {
   return bins;
 }
 
-function fillBins(bins: Bin[], pixels: ImageData) {
+function fillBins(bins: Bin[], pixels: ImageData, filters: Filters) {
   const binsCopy = [...bins];
 
   for (let i = 0; i < pixels.data.length; i = i + 4) {
@@ -82,7 +87,13 @@ function fillBins(bins: Bin[], pixels: ImageData) {
 
       const matchesCurrentBin = pixelAsHSL.h > currentBin.min && pixelAsHSL.h < currentBin.max;
 
-      if (matchesCurrentBin && pixelAsHSL.s > 30 && pixelAsHSL.s < 100 && pixelAsHSL.l < 75) {
+      if (
+        matchesCurrentBin &&
+        pixelAsHSL.s > filters.saturationMin &&
+        pixelAsHSL.s < filters.saturationMax &&
+        pixelAsHSL.l > filters.luminosityMin &&
+        pixelAsHSL.l < filters.luminosityMax
+      ) {
         currentBin.count++;
         currentBin.values.h += pixelAsHSL.h;
         currentBin.values.s += pixelAsHSL.s;
@@ -95,15 +106,29 @@ function fillBins(bins: Bin[], pixels: ImageData) {
   return binsCopy;
 }
 
-export async function getColorFromImage(imageUrl: string, config: Config): Promise<HSLColor> {
+export async function getColorFromImage(
+  imageUrl: string,
+  config: Config = {
+    filters: {
+      saturationMin: 20,
+      saturationMax: 95,
+      luminosityMin: 30,
+      luminosityMax: 70,
+    },
+  }
+): Promise<HSLColor> {
   const pixels = await getImagePixels(imageUrl);
+
+  const defaultColor: HSLColor = { h: 0, s: 0, l: 30 };
   if (pixels === null) {
-    return { h: 0, s: 0, l: 0 };
+    return defaultColor;
   }
 
+  console.log('config', config);
   const bins = setupBins();
-  const filledBins = fillBins(bins, pixels);
+  const filledBins = fillBins(bins, pixels, config.filters);
   const sortedBins = filledBins.sort(binComparer);
+  console.log('sorted', [...sortedBins]);
   const binWinner = sortedBins.shift();
 
   if (binWinner === undefined) {
@@ -117,8 +142,9 @@ export async function getColorFromImage(imageUrl: string, config: Config): Promi
     l: Math.floor(binWinner.values.l / binWinner.count),
   };
 
-  if (isNaN(highestColor.h) || isNaN(highestColor.s) || isNaN(highestColor.l)) {
-    const defaultColor: HSLColor = { h: 0, s: 0, l: 30 };
+  console.log(highestColor);
+
+  if (isNaN(highestColor.h)) {
     return defaultColor;
   }
 
