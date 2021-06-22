@@ -12,7 +12,7 @@
   "scripts": {
     "build": "tsc",
     "test": "jest",
-    "watch:tsc": "tsc --watch",
+    "dev": "tsc --watch",
     "watch:test": "jest --watch"
   },
   "author": {
