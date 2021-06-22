@@ -102,18 +102,22 @@ function fillBins(bins: Bin[], pixels: ImageData) {
   return binsCopy;
 }
 
+function enableDevTools() {
+  console.log('devtools');
+  const devTools = document.createElement('div');
+  devTools.innerHTML = 'DEV TOOLS';
+  const bodyElement = document.querySelector('body');
+  if (bodyElement) {
+    bodyElement.appendChild(devTools);
+  }
+}
+
 export async function getColorFromImage(
   imageUrl: string,
   config: Config
 ): Promise<HSLColor> {
   if (config.devTools) {
-    console.log('devtolls');
-    const devTools = document.createElement('div');
-    devTools.innerHTML = 'DEV TOOLS';
-    const bodyElement = document.querySelector('body');
-    if (bodyElement) {
-      bodyElement.appendChild(devTools);
-    }
+    enableDevTools();
   }
   const pixels = await getImagePixels(imageUrl);
   if (pixels === null) {
@@ -123,7 +127,12 @@ export async function getColorFromImage(
   const bins = setupBins();
   const filledBins = fillBins(bins, pixels);
   const sortedBins = filledBins.sort(binComparer);
-  const binWinner = sortedBins[0];
+  const binWinner = sortedBins.shift();
+
+  if (binWinner === undefined) {
+    console.error('could not get bin winner');
+    return { h: 0, s: 0, l: 0 };
+  }
 
   const highestColor = {
     h: Math.floor(binWinner.values.h / binWinner.count),

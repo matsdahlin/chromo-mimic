@@ -1,0 +1,150 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Color Extractor</title>
+    <script
+      src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"
+      defer
+    ></script>
+  </head>
+  <body>
+    <div
+      class="coverComponent"
+      x-data="coverComponent"
+      x-init="init()"
+      x-on:transitionend="swapBackgrounds()"
+      :class="{'show': transitioning === true}"
+    >
+      <div class="cover-container">
+        <img class="coverImage" x-bind:src="images[currentImageIndex]" />
+        <button x-bind:disabled="transitioning" x-on:click="toggleImage">
+          Tryck
+        </button>
+      </div>
+    </div>
+
+    <script src="../dist/chroma-mimic.js"></script>
+    <script>
+      const coverComponent = {
+        transitioning: false,
+        images: [
+          './images/omnivium.jpg',
+          './images/diluvium.jpg',
+          './images/wings-of-fire.jpg',
+        ],
+        currentImageIndex: 0,
+        swapBackgrounds() {
+          const root = document.documentElement;
+          const nextBackgroundGradient = root.style.getPropertyValue(
+            '--album-gradient-back'
+          );
+          root.style.setProperty('--album-gradient', nextBackgroundGradient);
+
+          this.transitioning = false;
+        },
+        async toggleImage() {
+          this.currentImageIndex =
+            this.currentImageIndex + 1 <= 2 ? this.currentImageIndex + 1 : 0;
+          this.getGradient(this.currentImageIndex);
+          this.transitioning = true;
+        },
+        async init() {
+          const highestColor = await getColorFromImage(this.images[0], {
+            devTools: true,
+          });
+
+          this.setVarGradient('--album-gradient', highestColor);
+        },
+        async getGradient(index) {
+          const highestColor = await getColorFromImage(this.images[index], {
+            devTools: true,
+          });
+
+          this.setVarGradient('--album-gradient-back', highestColor);
+        },
+        setVarGradient(gradientProperty, baseColor) {
+          const gradient = `linear-gradient(hsl(${baseColor.h},${
+            baseColor.s
+          }%,${baseColor.l * 1.75}%), hsl(${baseColor.h},${baseColor.s}%,${
+            baseColor.l * 0.5
+          }%))`;
+
+          const root = document.documentElement;
+          root.style.setProperty(gradientProperty, gradient);
+
+          const shadowColor = `hsla(${baseColor.h},${baseColor.s}%,${
+            baseColor.l * 0.4
+          }%, 0.8)`;
+          root.style.setProperty('--album-shadow-color', shadowColor);
+        },
+      };
+    </script>
+    <style>
+      :root {
+        --album-gradient: linear-gradient(
+          90deg,
+          rgba(0, 0, 0, 1) 0%,
+          rgba(0, 0, 0, 1) 100%
+        );
+
+        --album-gradient-back: linear-gradient(
+          90deg,
+          rgba(0, 0, 0, 1) 0%,
+          rgba(0, 0, 0, 1) 100%
+        );
+
+        --album-shadow-color: black;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      .coverComponent {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100vw;
+        height: 100vh;
+        background-image: var(--album-gradient);
+        flex-direction: column;
+        gap: 1rem;
+        user-select: none;
+      }
+
+      .coverComponent::before {
+        opacity: 0;
+        content: ' ';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: var(--album-gradient-back);
+      }
+
+      .show.coverComponent::before {
+        opacity: 1;
+        transition: opacity 500ms;
+      }
+
+      .cover-container {
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+      }
+
+      .coverImage {
+        width: 200px;
+        height: 200px;
+        box-shadow: 0px 0px 10px 0px var(--album-shadow-color),
+          0px 0px 85px 0px var(--album-shadow-color);
+      }
+    </style>
+  </body>
+</html>

@@ -8,7 +8,7 @@
     "extract",
     "hsl"
   ],
-  "main": "dist/chroma-mimic.cjs.js",
+  "main": "dist/chroma-mimic.js",
   "scripts": {
     "build": "tsc",
     "test": "jest",
