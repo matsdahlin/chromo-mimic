@@ -12,7 +12,6 @@ type Bin = {
 };
 
 export type Config = {
-  devTools: boolean;
   filters: {
     saturation: number;
   };
@@ -81,15 +80,9 @@ function fillBins(bins: Bin[], pixels: ImageData) {
     for (let j = 0; j < binsCopy.length; j++) {
       let currentBin = binsCopy[j];
 
-      const matchesCurrentBin =
-        pixelAsHSL.h > currentBin.min && pixelAsHSL.h < currentBin.max;
+      const matchesCurrentBin = pixelAsHSL.h > currentBin.min && pixelAsHSL.h < currentBin.max;
 
-      if (
-        matchesCurrentBin &&
-        pixelAsHSL.s > 30 &&
-        pixelAsHSL.s < 100 &&
-        pixelAsHSL.l < 75
-      ) {
+      if (matchesCurrentBin && pixelAsHSL.s > 30 && pixelAsHSL.s < 100 && pixelAsHSL.l < 75) {
         currentBin.count++;
         currentBin.values.h += pixelAsHSL.h;
         currentBin.values.s += pixelAsHSL.s;
@@ -102,23 +95,7 @@ function fillBins(bins: Bin[], pixels: ImageData) {
   return binsCopy;
 }
 
-function enableDevTools() {
-  console.log('devtools');
-  const devTools = document.createElement('div');
-  devTools.innerHTML = 'DEV TOOLS';
-  const bodyElement = document.querySelector('body');
-  if (bodyElement) {
-    bodyElement.appendChild(devTools);
-  }
-}
-
-export async function getColorFromImage(
-  imageUrl: string,
-  config: Config
-): Promise<HSLColor> {
-  if (config.devTools) {
-    enableDevTools();
-  }
+export async function getColorFromImage(imageUrl: string, config: Config): Promise<HSLColor> {
   const pixels = await getImagePixels(imageUrl);
   if (pixels === null) {
     return { h: 0, s: 0, l: 0 };
@@ -134,11 +111,18 @@ export async function getColorFromImage(
     return { h: 0, s: 0, l: 0 };
   }
 
+  console.log('binwin', binWinner);
+
   const highestColor = {
     h: Math.floor(binWinner.values.h / binWinner.count),
     s: Math.floor(binWinner.values.s / binWinner.count),
     l: Math.floor(binWinner.values.l / binWinner.count),
   };
+
+  if (isNaN(highestColor.h) || isNaN(highestColor.s) || isNaN(highestColor.l)) {
+    const defaultColor: HSLColor = { h: 0, s: 0, l: 30 };
+    return defaultColor;
+  }
 
   return highestColor;
 }
@@ -184,10 +168,7 @@ export function convertRGBtoHSL(
   lightness = (channelMaxValue + channelMinValue) / 2;
 
   // Calculate saturation
-  saturation =
-    channelValueDelta == 0
-      ? 0
-      : channelValueDelta / (1 - Math.abs(2 * lightness - 1));
+  saturation = channelValueDelta == 0 ? 0 : channelValueDelta / (1 - Math.abs(2 * lightness - 1));
 
   // Multiply lightness and saturation by 100
   saturation = +(saturation * 100).toFixed(1);
