@@ -111,8 +111,6 @@ export async function getColorFromImage(imageUrl: string, config: Config): Promi
     return { h: 0, s: 0, l: 0 };
   }
 
-  console.log('binwin', binWinner);
-
   const highestColor = {
     h: Math.floor(binWinner.values.h / binWinner.count),
     s: Math.floor(binWinner.values.s / binWinner.count),

@@ -19,9 +19,7 @@
     >
       <div class="cover-container">
         <img class="coverImage" x-bind:src="images[currentImageIndex]" />
-        <button x-bind:disabled="transitioning" x-on:click="toggleImage">
-          Tryck
-        </button>
+        <button x-bind:disabled="transitioning" x-on:click="toggleImage">Tryck</button>
       </div>
     </div>
 
@@ -33,27 +31,23 @@
           './images/omnivium.jpg',
           './images/diluvium.jpg',
           './images/wings-of-fire.jpg',
+          './images/reinkaos.jpg',
+          './images/white-album.jpeg',
         ],
         currentImageIndex: 0,
         swapBackgrounds() {
           const root = document.documentElement;
-          const nextBackgroundGradient = root.style.getPropertyValue(
-            '--album-gradient-back'
-          );
+          const nextBackgroundGradient = root.style.getPropertyValue('--album-gradient-back');
           root.style.setProperty('--album-gradient', nextBackgroundGradient);
-
           this.transitioning = false;
         },
         async toggleImage() {
-          this.currentImageIndex =
-            this.currentImageIndex + 1 <= 2 ? this.currentImageIndex + 1 : 0;
-          this.getGradient(this.currentImageIndex);
+          this.currentImageIndex = this.currentImageIndex + 1 <= 4 ? this.currentImageIndex + 1 : 0;
           this.transitioning = true;
+          this.getGradient(this.currentImageIndex);
         },
         async init() {
-          const highestColor = await getColorFromImage(this.images[0], {
-            devTools: true,
-          });
+          const highestColor = await getColorFromImage(this.images[0]);
 
           this.setVarGradient('--album-gradient', highestColor);
         },
@@ -65,35 +59,23 @@
           this.setVarGradient('--album-gradient-back', highestColor);
         },
         setVarGradient(gradientProperty, baseColor) {
-          const gradient = `linear-gradient(hsl(${baseColor.h},${
-            baseColor.s
-          }%,${baseColor.l * 1.75}%), hsl(${baseColor.h},${baseColor.s}%,${
-            baseColor.l * 0.5
-          }%))`;
+          const gradient = `linear-gradient(hsl(${baseColor.h},${baseColor.s}%,${
+            baseColor.l * 1.75
+          }%), hsl(${baseColor.h},${baseColor.s}%,${baseColor.l * 0.5}%))`;
 
           const root = document.documentElement;
           root.style.setProperty(gradientProperty, gradient);
 
-          const shadowColor = `hsla(${baseColor.h},${baseColor.s}%,${
-            baseColor.l * 0.4
-          }%, 0.8)`;
+          const shadowColor = `hsla(${baseColor.h},${baseColor.s}%,${baseColor.l * 0.4}%, 0.8)`;
           root.style.setProperty('--album-shadow-color', shadowColor);
         },
       };
     </script>
     <style>
       :root {
-        --album-gradient: linear-gradient(
-          90deg,
-          rgba(0, 0, 0, 1) 0%,
-          rgba(0, 0, 0, 1) 100%
-        );
+        --album-gradient: linear-gradient(90deg, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 100%);
 
-        --album-gradient-back: linear-gradient(
-          90deg,
-          rgba(0, 0, 0, 1) 0%,
-          rgba(0, 0, 0, 1) 100%
-        );
+        --album-gradient-back: linear-gradient(90deg, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 100%);
 
         --album-shadow-color: black;
       }
@@ -129,7 +111,7 @@
 
       .show.coverComponent::before {
         opacity: 1;
-        transition: opacity 500ms;
+        transition: opacity 300ms linear;
       }
 
       .cover-container {
