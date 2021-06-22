@@ -138,7 +138,7 @@ export async function getColorFromImage(
   const highestColor = {
     h: Math.floor(binWinner.values.h / binWinner.count),
     s: Math.floor(binWinner.values.s / binWinner.count),
-    l: Math.floor(binWinner.values.l / binWinner.count),
+    l: Math.floor(binWinner.values.l / binWinner.count) * 0.95,
   };
 
   console.log(highestColor);
