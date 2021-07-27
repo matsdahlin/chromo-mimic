@@ -1,19 +1,17 @@
 {
   "include": ["src/**/*.ts"],
-  "exclude": ["node_modules"],
+  "exclude": ["node_modules/**/*.*"],
   "compilerOptions": {
-    "target": "es5",
+    "target": "ES6",
     "module": "commonjs",
     "lib": ["DOM", "ES2015"],
     "declaration": true,
-    // "sourceMap": true,
     "strict": true,
     "esModuleInterop": true,
     "noImplicitAny": true,
     "noUnusedLocals": true,
     "forceConsistentCasingInFileNames": true,
     "outDir": "./dist",
-    "rootDir": "./src"
   },
   "watchOptions": {
     "watchFile": "useFsEvents",
