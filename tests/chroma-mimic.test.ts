@@ -1,4 +1,5 @@
-import { convertRGBtoHSL, setupBins } from '../src/chroma-mimic';
+import { convertRGBtoHSL } from '../src/helpers';
+import { setupBins } from '../src/binning';
 
 describe('rgbToHSL function', () => {
   test.each([

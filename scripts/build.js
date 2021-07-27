@@ -6,5 +6,4 @@ build({
   bundle: true,
   // minify: true,
   platform: 'browser',
-  globalName: 'ChromaMimic',
 });

@@ -14,7 +14,7 @@
   "scripts": {
     "build": "node ./scripts/build.js",
     "test": "jest",
-    "dev": "tsc --watch",
+    "typecheck": "tsc",
     "watch:test": "jest --watch"
   },
   "author": {
