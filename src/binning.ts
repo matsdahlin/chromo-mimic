@@ -1,4 +1,4 @@
-import { HSLColor, Filters } from './cm-core';
+import { HSLColor, Filters } from './core';
 import { convertRGBtoHSL } from './helpers';
 
 type Bin = {

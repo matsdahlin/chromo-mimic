@@ -11,7 +11,7 @@
     ></script>
   </head>
   <body>
-    <h1>Chroma Mimic</h1>
+    <h1>Chromo-Mimic</h1>
     <p>An HSL-first library to extract average color from image with finegrained control.</p>
     <section class="demo-section">
       <div
@@ -34,7 +34,7 @@
         </video>
       </div>
     </section>
-    <script src="../dist/chroma-mimic.js"></script>
+    <script src="../dist/chromo-mimic.js"></script>
     <script>
       const coverComponent = {
         transitioning: false,
@@ -61,12 +61,12 @@
           this.getGradient(this.currentImageIndex);
         },
         async init() {
-          const highestColor = await ChromaMimic.getColorFromImage(this.images[0]);
+          const highestColor = await ChromoMimic.getColorFromImage(this.images[0]);
 
           this.setVarGradient('--album-gradient', highestColor);
         },
         async getGradient(index) {
-          const highestColor = await ChromaMimic.getColorFromImage(this.images[index]);
+          const highestColor = await ChromoMimic.getColorFromImage(this.images[index]);
           console.log(highestColor);
 
           this.setVarGradient('--album-gradient-back', highestColor);
@@ -92,7 +92,7 @@
 
       async function setGradient() {
         canvasContext.drawImage(video, 0, 0);
-        const baseColor = await ChromaMimic.getColorFromImageData(
+        const baseColor = await ChromoMimic.getColorFromImageData(
           canvasContext.getImageData(0, 0, video.clientWidth, video.clientHeight),
           {
             filters: {

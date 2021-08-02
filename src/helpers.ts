@@ -1,4 +1,4 @@
-import { HSLColor } from './cm-core';
+import { HSLColor } from './core';
 
 export function convertRGBtoHSL(
   redChannel: number,
