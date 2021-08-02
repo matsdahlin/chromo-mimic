@@ -12,7 +12,8 @@
   "module": "dist/chromo-mimic.esm.js",
   "typings": "dist/chromo-mimic.d.ts",
   "scripts": {
-    "build": "node ./scripts/build.js",
+    "build": "npm-run-all -p build:*",
+    "build:bundle": "node ./scripts/build.js",
     "build:typedefinitions": "tsc --emitDeclarationOnly",
     "test": "jest",
     "watch:test": "jest --watch",
@@ -22,6 +23,14 @@
     "email": "pm@matsdahlin.com",
     "name": "Mats Dahlin"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/matsdahlin/chromo-mimic.git"
+  },
+  "bugs": {
+    "url": "https://github.com/matsdahlin/chromo-mimic/issues"
+  },
+  "homepage": "https://github.com/matsdahlin/chromo-mimic#readme",
   "license": "MIT",
   "files": [
     "dist"
@@ -30,6 +39,7 @@
     "@types/jest": "^26.0.23",
     "esbuild": "^0.12.15",
     "jest": "^26.6.3",
+    "npm-run-all": "4.1.5",
     "ts-jest": "^26.5.6",
     "typescript": "^4.2.4"
   }
