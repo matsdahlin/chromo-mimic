@@ -1,6 +1,6 @@
 {
   "name": "chromo-mimic",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "extract average color from images",
   "keywords": [
     "color",
