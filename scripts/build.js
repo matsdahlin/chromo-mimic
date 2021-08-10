@@ -7,3 +7,11 @@ build({
   minify: true,
   platform: 'browser',
 });
+
+build({
+  entryPoints: ['./src/chromo-mimic.ts'],
+  outfile: 'dist/chromo-mimic.esm.js',
+  bundle: true,
+  minify: true,
+  format: 'esm',
+});
