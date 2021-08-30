@@ -9,6 +9,9 @@
       src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"
       defer
     ></script>
+    <script src="../dist/chromo-mimic.js" defer></script>
+    <script src="./cover-component.js" defer></script>
+    <script src="./video-component.js" defer></script>
   </head>
   <body>
     <h1>Chromo-Mimic</h1>
@@ -23,128 +26,17 @@
       >
         <div class="cover-container">
           <img class="coverImage" x-bind:src="images[currentImageIndex]" />
-          <button x-bind:disabled="transitioning" x-on:click="toggleImage">Tryck</button>
+          <button x-bind:disabled="transitioning" x-on:click="previousImage">Prev</button>
+          <button x-bind:disabled="transitioning" x-on:click="nextImage">Next</button>
         </div>
       </div>
     </section>
     <section class="demo-section">
       <div class="ambilight-component">
-        <video id="demovideo" autoplay loop muted>
+        <video id="demovideo" loop muted>
           <source src="./bigbuckbunny.mp4" />
         </video>
       </div>
     </section>
-    <script src="../dist/chromo-mimic.js"></script>
-    <script>
-      const coverComponent = {
-        transitioning: false,
-        images: [
-          './images/omnivium.jpg',
-          './images/iconic-single.jpg',
-          './images/white-album.jpeg',
-          './images/diluvium.jpg',
-          './images/wings-of-fire.jpg',
-          './images/reinkaos.jpg',
-          './images/firewind.jpeg',
-        ],
-        currentImageIndex: 0,
-        swapBackgrounds() {
-          const root = document.documentElement;
-          const nextBackgroundGradient = root.style.getPropertyValue('--album-gradient-back');
-          root.style.setProperty('--album-gradient', nextBackgroundGradient);
-          this.transitioning = false;
-        },
-        async toggleImage() {
-          this.currentImageIndex =
-            this.currentImageIndex + 1 <= this.images.length - 1 ? this.currentImageIndex + 1 : 0;
-          this.transitioning = true;
-          this.getGradient(this.currentImageIndex);
-        },
-        async init() {
-          const highestColor = await ChromoMimic.getColorFromImage(this.images[0]);
-
-          this.setVarGradient('--album-gradient', highestColor);
-        },
-        async getGradient(index) {
-          const highestColor = await ChromoMimic.getColorFromImage(this.images[index]);
-          console.log(highestColor);
-
-          this.setVarGradient('--album-gradient-back', highestColor);
-        },
-        setVarGradient(gradientProperty, baseColor) {
-          const gradient = `linear-gradient(hsl(${baseColor.h},${baseColor.s}%,${
-            baseColor.l
-          }%), hsl(${baseColor.h},${baseColor.s}%,${baseColor.l * 0.5}%))`;
-
-          const root = document.documentElement;
-          root.style.setProperty(gradientProperty, gradient);
-
-          const shadowColor = `hsla(${baseColor.h},${baseColor.s}%,${baseColor.l * 0.4}%, 0.8)`;
-          root.style.setProperty('--album-shadow-color', shadowColor);
-        },
-      };
-    </script>
-    <script>
-      const video = document.getElementById('demovideo');
-      const demoVideoCanvas = document.createElement('canvas');
-      const canvasContext = demoVideoCanvas.getContext('2d');
-      const root = document.documentElement;
-
-      async function setGradient() {
-        canvasContext.drawImage(video, 0, 0);
-        const baseColor = await ChromoMimic.getColorFromImageData(
-          canvasContext.getImageData(0, 0, video.clientWidth, video.clientHeight),
-          {
-            filters: {
-              saturationMin: 5,
-              saturationMax: 100,
-              luminosityMin: 5,
-              luminosityMax: 90,
-            },
-            defaultColor: { h: 0, s: 0, l: 30 },
-          }
-        );
-        const gradient = `linear-gradient(hsl(${baseColor.h},${baseColor.s}%,${
-          baseColor.l
-        }%), hsl(${baseColor.h},${baseColor.s}%,${baseColor.l * 0.8}%))`;
-
-        root.style.setProperty('--video-background', gradient);
-
-        const shadowColor = `hsla(${baseColor.h},${baseColor.s}%,${baseColor.l * 0.6}%, 0.8)`;
-        root.style.setProperty('--video-shadow-color', shadowColor);
-      }
-
-      let videoIsPlaying = false;
-      video.addEventListener('click', () => {
-        // if (videoIsPlaying) {
-        //   video.stop();
-        //   videoIsPlaying = false;
-        // } else {
-        //   video.start();
-        //   videoIsPlaying = true;
-        // }
-      });
-
-      video.addEventListener('loadeddata', function (e) {
-        demoVideoCanvas.width = video.clientWidth;
-        demoVideoCanvas.height = video.clientHeight;
-        video.currentTime = 6;
-        setGradient();
-      });
-
-      video.addEventListener(
-        'play',
-        function () {
-          var $this = this;
-          (function loop() {
-            if (!$this.paused && !$this.ended) {
-              setGradient();
-              setTimeout(loop, 1000 / 24); // drawing at 30fps
-            }
-          })();
-        },
-        0
-      );
-    </script>
   </body>
 </html>
