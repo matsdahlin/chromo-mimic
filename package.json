@@ -1,6 +1,6 @@
 {
   "name": "chromo-mimic",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "extract average color from images",
   "keywords": [
     "color",
@@ -15,8 +15,8 @@
     "build": "npm-run-all -p build:*",
     "build:bundle": "node ./scripts/build.js",
     "build:typedefinitions": "tsc --emitDeclarationOnly",
-    "test": "jest",
-    "watch:test": "jest --watch",
+    "test": "jest --collectCoverage",
+    "test:watch": "jest --watch",
     "typecheck": "tsc --noEmit"
   },
   "author": {
