@@ -1,15 +1,15 @@
 const { build } = require('esbuild');
 
 build({
-  entryPoints: ['./src/chromo-mimic.js'],
-  outdir: 'dist',
+  entryPoints: ['./builds/cdn.ts'],
+  outfile: 'dist/chromo-mimic.js',
   bundle: true,
   minify: true,
   platform: 'browser',
 });
 
 build({
-  entryPoints: ['./src/chromo-mimic.ts'],
+  entryPoints: ['./builds/module.ts'],
   outfile: 'dist/chromo-mimic.esm.js',
   bundle: true,
   minify: true,
