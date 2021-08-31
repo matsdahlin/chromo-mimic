@@ -1,0 +1,54 @@
+---
+import {Markdown} from 'astro/components'
+import AlbumCover from '../components/AlbumCover/AlbumCover.svelte'
+import ChromoMimicPreview from '../components/ChromoMimicPreview/ChromoMimicPreview.svelte'
+import Video from '../components/VideoDemo/Video.svelte'
+---
+
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width" />
+    <title>chromo-mimic live demos</title>
+  </head>
+
+  <body>
+    <Markdown>
+      # Chromo-mimic
+
+    </Markdown>
+
+    <Markdown>
+      ## Interactive filter demo
+
+    </Markdown>
+    <ChromoMimicPreview client:only />
+
+    <Markdown>
+      ## Spotify style gradient from album art
+
+    </Markdown>
+    <AlbumCover client:only />
+
+    <Markdown>
+      ## Ambilight style demo
+
+    </Markdown>
+
+    <Video client:only />
+  </body>
+
+</html>
+
+<style>
+  *{
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+  }
+</style>
