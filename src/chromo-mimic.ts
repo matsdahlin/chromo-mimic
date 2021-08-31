@@ -6,5 +6,3 @@ let ChromoMimic = {
 };
 
 export default ChromoMimic;
-
-(window as any).ChromoMimic = ChromoMimic;
