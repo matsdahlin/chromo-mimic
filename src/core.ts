@@ -28,6 +28,7 @@ export type Config = {
 
 async function getImagePixels(imageUrl: string): Promise<ImageData | null> {
   const canvas = document.createElement('canvas');
+  // TODO: Determine if canvas size should be dynamic, set or configurable
   canvas.width = 200;
   canvas.height = 200;
   const canvasContext = canvas.getContext('2d');
@@ -59,7 +60,10 @@ export const defaultConfig: Config = {
   fallbackColor: { h: 0, s: 0, l: 30 },
 };
 
-export async function getColorFromImageData(pixels: ImageData, config: Config = defaultConfig) {
+export async function getColorFromImageData(
+  pixels: ImageData,
+  config: Config = defaultConfig
+): Promise<HSLColor> {
   if (pixels === null) {
     return config.fallbackColor;
   }
@@ -74,7 +78,7 @@ export async function getColorFromImageData(pixels: ImageData, config: Config = 
   const highestColor = {
     h: Math.floor(binWinner.values.h / binWinner.count),
     s: Math.floor(binWinner.values.s / binWinner.count),
-    l: (Math.floor(binWinner.values.l / binWinner.count) * 0.95).toFixed(0),
+    l: parseInt((Math.floor(binWinner.values.l / binWinner.count) * 0.95).toFixed(0)),
   };
 
   if (isNaN(highestColor.h)) {
@@ -94,22 +98,5 @@ export async function getColorFromImage(
     return config.fallbackColor;
   }
 
-  const binWinner = binning(pixels, config.filters);
-
-  if (binWinner === null) {
-    console.error('could not get bin winner');
-    return { h: 0, s: 0, l: 0 };
-  }
-
-  const highestColor = {
-    h: Math.floor(binWinner.values.h / binWinner.count),
-    s: Math.floor(binWinner.values.s / binWinner.count),
-    l: Math.floor((binWinner.values.l / binWinner.count) * 0.95),
-  };
-
-  if (isNaN(highestColor.h)) {
-    return config.fallbackColor;
-  }
-
-  return highestColor;
+  return getColorFromImageData(pixels, config);
 }
