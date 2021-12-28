@@ -23,7 +23,7 @@ export type Filters = {
 
 export type Config = {
   filters: Filters;
-  defaultColor: HSLColor;
+  fallbackColor: HSLColor;
 };
 
 async function getImagePixels(imageUrl: string): Promise<ImageData | null> {
@@ -51,17 +51,17 @@ async function getImagePixels(imageUrl: string): Promise<ImageData | null> {
 
 export const defaultConfig: Config = {
   filters: {
-    saturationMin: 20,
-    saturationMax: 95,
-    luminosityMin: 35,
-    luminosityMax: 65,
+    saturationMin: 0,
+    saturationMax: 0,
+    luminosityMin: 0,
+    luminosityMax: 0,
   },
-  defaultColor: { h: 0, s: 0, l: 30 },
+  fallbackColor: { h: 0, s: 0, l: 30 },
 };
 
 export async function getColorFromImageData(pixels: ImageData, config: Config = defaultConfig) {
   if (pixels === null) {
-    return config.defaultColor;
+    return config.fallbackColor;
   }
 
   const binWinner = binning(pixels, config.filters);
@@ -78,7 +78,7 @@ export async function getColorFromImageData(pixels: ImageData, config: Config = 
   };
 
   if (isNaN(highestColor.h)) {
-    return config.defaultColor;
+    return config.fallbackColor;
   }
 
   return highestColor;
@@ -91,7 +91,7 @@ export async function getColorFromImage(
   const pixels = await getImagePixels(imageUrl);
 
   if (pixels === null) {
-    return config.defaultColor;
+    return config.fallbackColor;
   }
 
   const binWinner = binning(pixels, config.filters);
@@ -108,7 +108,7 @@ export async function getColorFromImage(
   };
 
   if (isNaN(highestColor.h)) {
-    return config.defaultColor;
+    return config.fallbackColor;
   }
 
   return highestColor;
